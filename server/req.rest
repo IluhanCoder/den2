@@ -1,0 +1,27 @@
+POST http://localhost:5000/product
+Content-Type: application/json
+
+{
+    "product": {
+        "name": "test",
+        "desc": "test",
+        "category": "test",
+        "price": 1000,
+        "quantity": 2,
+        "status": "For Sale"
+    }
+}
+
+###
+
+POST http://localhost:5000/filter-products
+Content-Type: application/json
+
+{
+    "offset": 0,
+    "query": {
+        "name": "test",
+        "price": {"$lt": 500}
+    }
+}
+

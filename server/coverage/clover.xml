@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1682069211697" clover="3.2.0">
+  <project timestamp="1682069211697" name="All files">
+    <metrics statements="49" coveredstatements="39" conditionals="6" coveredconditionals="4" methods="12" coveredmethods="10" elements="67" coveredelements="53" complexity="0" loc="49" ncloc="49" packages="2" files="4" classes="4"/>
+    <package name="db">
+      <metrics statements="6" coveredstatements="6" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+      <file name="connectToDB.ts" path="D:\MAUP\DB Protection\App\server\src\db\connectToDB.ts">
+        <metrics statements="6" coveredstatements="6" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+        <line num="1" count="1" type="stmt"/>
+        <line num="3" count="1" type="stmt"/>
+        <line num="4" count="2" type="stmt"/>
+        <line num="5" count="2" type="stmt"/>
+        <line num="6" count="1" type="stmt"/>
+        <line num="8" count="1" type="stmt"/>
+      </file>
+    </package>
+    <package name="products">
+      <metrics statements="43" coveredstatements="33" conditionals="6" coveredconditionals="4" methods="11" coveredmethods="9"/>
+      <file name="product-model.ts" path="D:\MAUP\DB Protection\App\server\src\products\product-model.ts">
+        <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="2" count="1" type="stmt"/>
+        <line num="15" count="1" type="stmt"/>
+        <line num="25" count="1" type="stmt"/>
+        <line num="27" count="1" type="stmt"/>
+      </file>
+      <file name="products-service.ts" path="D:\MAUP\DB Protection\App\server\src\products\products-service.ts">
+        <metrics statements="32" coveredstatements="26" conditionals="6" coveredconditionals="4" methods="9" coveredmethods="9"/>
+        <line num="1" count="1" type="stmt"/>
+        <line num="3" count="1" type="stmt"/>
+        <line num="6" count="1" type="stmt"/>
+        <line num="18" count="17" type="stmt"/>
+        <line num="19" count="20" type="stmt"/>
+        <line num="28" count="9" type="stmt"/>
+        <line num="30" count="9" type="stmt"/>
+        <line num="31" count="9" type="stmt"/>
+        <line num="37" count="1" type="stmt"/>
+        <line num="44" count="9" type="stmt"/>
+        <line num="45" count="9" type="stmt"/>
+        <line num="47" count="0" type="stmt"/>
+        <line num="56" count="5" type="stmt"/>
+        <line num="57" count="5" type="stmt"/>
+        <line num="59" count="0" type="stmt"/>
+        <line num="71" count="2" type="stmt"/>
+        <line num="72" count="2" type="stmt"/>
+        <line num="73" count="1" type="cond" truecount="2" falsecount="0"/>
+        <line num="75" count="0" type="stmt"/>
+        <line num="87" count="2" type="stmt"/>
+        <line num="88" count="2" type="cond" truecount="0" falsecount="1"/>
+        <line num="89" count="0" type="stmt"/>
+        <line num="90" count="2" type="stmt"/>
+        <line num="91" count="2" type="stmt"/>
+        <line num="92" count="2" type="cond" truecount="1" falsecount="1"/>
+        <line num="94" count="0" type="stmt"/>
+        <line num="103" count="1" type="stmt"/>
+        <line num="104" count="1" type="stmt"/>
+        <line num="105" count="4" type="stmt"/>
+        <line num="106" count="1" type="stmt"/>
+        <line num="108" count="0" type="stmt"/>
+        <line num="113" count="1" type="stmt"/>
+      </file>
+      <file name="sortOptions.ts" path="D:\MAUP\DB Protection\App\server\src\products\sortOptions.ts">
+        <metrics statements="7" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="0"/>
+        <line num="1" count="1" type="stmt"/>
+        <line num="5" count="0" type="stmt"/>
+        <line num="6" count="0" type="stmt"/>
+        <line num="7" count="0" type="stmt"/>
+        <line num="11" count="0" type="stmt"/>
+        <line num="18" count="1" type="stmt"/>
+        <line num="29" count="1" type="stmt"/>
+      </file>
+    </package>
+  </project>
+</coverage>

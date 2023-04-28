@@ -12,15 +12,15 @@ import productsService from "./products-service.js";
 import mongoose from "mongoose";
 
 interface IFilterProductsRequest {
-  query: object,
-  offset: number,
-  sort: string,
-  connection: mongoose.Connection
+  query: object;
+  offset: number;
+  sort: string;
+  connection: mongoose.Connection;
 }
 
 interface IDeleteSetOfProductsRequest {
-  productsID: string[],
-  connection: mongoose.Connection
+  productsID: string[];
+  connection: mongoose.Connection;
 }
 
 /**
@@ -71,7 +71,7 @@ export class ProductsController {
       const result = await service.filterProducts(query, offset, sort);
       return res.status(200).json(result);
     } catch (error: any) {
-      next(error)
+      next(error);
     }
   }
 
@@ -103,7 +103,7 @@ export class ProductsController {
       const { connection } = req.body;
       const service = new ProductService(connection);
       const pages = await service.getPagesAmount();
-      return res.status(200).json({pages});
+      return res.status(200).json({ pages });
     } catch (error) {
       next(error);
     }

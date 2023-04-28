@@ -12,7 +12,7 @@ import IProduct from "./IProduct.js";
  * @param status - product's status. Is value, which may contain either "For Sale" or "Not available" value
  */
 const ProductSchema = new Schema<IProduct>({
-  num: {type: Number, unique: true},
+  num: { type: Number, unique: true },
   name: String,
   desc: String,
   category: String,

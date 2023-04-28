@@ -27,8 +27,8 @@
 //                 quantity: 1,
 //                 status: "For Sale"
 //             }
-//         } 
-        
+//         }
+
 //         const product1 = await productsService.createProduct(productData1);
 //         const requestResult = await supertest(app).post("/filter-products").send(requestBody).set('Accept', 'application/json').then(res => {
 //             res.body.some((product: IProduct) => {

@@ -5,23 +5,29 @@ import productsController from "./products/products-controller.js";
 import userController from "./users/user-controller.js";
 
 const router = Router();
-    
-router.post("/filter-products", requestChecker.checkBody, ProductsController.filterProducts)
-    
+
 router.post(
-    "/product",
-    requestChecker.checkBody,
-    ProductsController.createProduct
+  "/filter-products",
+  requestChecker.checkBody,
+  ProductsController.filterProducts
 );
 
-router.get("/empty-cells", ProductsController.getEmptyCells)
+router.post(
+  "/product",
+  requestChecker.checkBody,
+  ProductsController.createProduct
+);
 
-router.delete("/product/:id", ProductsController.deleteByID)
+router.get("/empty-cells", ProductsController.getEmptyCells);
 
-router.get("/pages-amount", productsController.getPagesAmount)
+router.delete("/product/:id", ProductsController.deleteByID);
+
+router.get("/pages-amount", productsController.getPagesAmount);
 
 router.put("/product/:id", productsController.editProduct);
 
-router.post("/login", userController.login)
+router.post("/login", userController.login);
+
+router.get("/verify/:data", userController.verify);
 
 export default router;

@@ -1,7 +1,7 @@
 import { Types } from "mongoose";
 
 export default interface IProduct {
-  _id?: Types.ObjectId,
+  _id?: Types.ObjectId;
   num?: number;
   name: string;
   desc: string;
@@ -18,10 +18,10 @@ export async function propertiesExists(data: Object): Promise<boolean> {
     category: "",
     price: 0,
     quantity: 0,
-    status: ""
+    status: "",
   };
 
   return Object.keys(data).some((key: string) => {
-    return temp[key] !== undefined
-  })
+    return temp[key] !== undefined;
+  });
 }

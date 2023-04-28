@@ -11,8 +11,8 @@ import ProductSchema from "./product-schema.js";
  * checks if product with given *num* field exists in array
  * @param array - array of products ({@link IProduct}[])
  * @param number - value of number you want to check
- * @returns 
- * *true* - if product exists. 
+ * @returns
+ * *true* - if product exists.
  * *false* - if product does not exists
  */
 function numDoesExist(array: IProduct[], number: number): boolean {
@@ -33,9 +33,9 @@ class ProductService {
   }
 
   /**
- * finds smallest "free" num field value in database
- * @returns value of found "free" num
- */
+   * finds smallest "free" num field value in database
+   * @returns value of found "free" num
+   */
   async getFreeNum() {
     let products: IProduct[];
     products = await this.ProductModel.find();
@@ -48,16 +48,19 @@ class ProductService {
    * @desc adds a new entry into Products collection
    * @param data - product you want to add into database
    * @returns created product data
-   */ 
+   */
   async createProduct(data: IProduct): Promise<IProduct> {
     try {
-      return await this.ProductModel.create({ num: await this.getFreeNum(), ...data });
+      return await this.ProductModel.create({
+        num: await this.getFreeNum(),
+        ...data,
+      });
     } catch (error) {
       throw error;
     }
   }
 
-  /** 
+  /**
    * deletes product with specified ID from database
    * @param productId - ID of Product you want to remove form database ({@link https://mongoosejs.com/docs/schematypes.html#objectids| mognoose.types.objectID})
    */
@@ -72,8 +75,8 @@ class ProductService {
   /**
    * checks if product with provided ID exists in database
    * @param productId - ID of Product you want to check in database
-   * @returns 
-   * *true* - if product exists. 
+   * @returns
+   * *true* - if product exists.
    * *false* - if product does not exist
    */
   async IDExists(productId: Types.ObjectId): Promise<boolean> {
@@ -92,14 +95,24 @@ class ProductService {
    * @param sort - sorting type. All of available options described at {@link ProductSortOptions} object. Sort is {@link ProductSortOptions.num|"num"} by default, which means products are being sorted by it's num field ascending
    * @returns array of {@link IProduct} objects
    */
-  async filterProducts(query: object | any, offset: number, sort: string = "num"): Promise<IProduct[]> {
+  async filterProducts(
+    query: object | any,
+    offset: number,
+    sort: string = "num"
+  ): Promise<IProduct[]> {
     try {
-      if(ProductSortOptions[sort] === undefined) 
+      if (ProductSortOptions[sort] === undefined)
         throw ProductSortError.noOption();
       const chunkLen: number = parseInt(process.env.DATA_CHUNK_LEN);
       const offsetStart = offset * chunkLen;
-      if(Types.ObjectId.isValid(query._id)) query._id = new Types.ObjectId(query._id);
-      const data = await this.ProductModel.find(query).skip(offsetStart).limit(chunkLen).sort((sort === undefined) ? ProductSortOptions.num : ProductSortOptions[sort]);
+      if (Types.ObjectId.isValid(query._id))
+        query._id = new Types.ObjectId(query._id);
+      const data = await this.ProductModel.find(query)
+        .skip(offsetStart)
+        .limit(chunkLen)
+        .sort(
+          sort === undefined ? ProductSortOptions.num : ProductSortOptions[sort]
+        );
       return data;
     } catch (error) {
       throw error;
@@ -109,7 +122,7 @@ class ProductService {
   async deleteById(productId: string) {
     try {
       const convertedID: Types.ObjectId = new Types.ObjectId(productId);
-      return await this.ProductModel.deleteOne({_id: convertedID});
+      return await this.ProductModel.deleteOne({ _id: convertedID });
     } catch (error) {
       throw error;
     }
@@ -117,18 +130,20 @@ class ProductService {
 
   async getEmptyCells() {
     try {
-      return await this.ProductModel.aggregate([{
-        "$match": {
-          "$or": [
-            { name: "" },
-            { desc: "" },
-            { category: "" },
-            { status: "" },
-            { quantity: null },
-            { price: null }
-          ]
-        }
-      }])
+      return await this.ProductModel.aggregate([
+        {
+          $match: {
+            $or: [
+              { name: "" },
+              { desc: "" },
+              { category: "" },
+              { status: "" },
+              { quantity: null },
+              { price: null },
+            ],
+          },
+        },
+      ]);
     } catch (error) {
       throw error;
     }
@@ -140,14 +155,17 @@ class ProductService {
       return Math.ceil((await this.ProductModel.find()).length / chunkLen);
     } catch (error) {
       throw error;
-  }
+    }
   }
 
   async editProduct(productId: string, field: string, value: any) {
     try {
       const editQuery = {};
       editQuery[field] = value;
-      return await this.ProductModel.updateOne({ _id: new Types.ObjectId(productId) }, editQuery);
+      return await this.ProductModel.updateOne(
+        { _id: new Types.ObjectId(productId) },
+        editQuery
+      );
     } catch (error) {
       throw error;
     }

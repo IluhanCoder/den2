@@ -2,8 +2,8 @@ import mongoose from "mongoose";
 
 export default async function connectToDataBase(dbConn: string) {
   try {
-    await mongoose.connect(dbConn);
-    console.log(`[server]: connected to database ${dbConn}`);
+    console.log(`[server]: connecting to database ${dbConn}`);
+    return await mongoose.createConnection(dbConn);
   } catch (error) {
     throw error;
   }

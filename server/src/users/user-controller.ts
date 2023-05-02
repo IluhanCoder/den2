@@ -12,23 +12,23 @@ export default new (class UserController {
       const user: IUser = await service.login(login, password, email);
       return res.status(200).json(user);
     } catch (error) {
-        if(error instanceof UserError) {
-            return res.status(error.status).send(error.name);
-        }
+      if (error instanceof UserError) {
+        return res.status(error.status).send(error.name);
+      }
       next(error);
     }
   }
 
   async verify(req: Request, res: Response, next: NextFunction) {
     try {
-        const {data} = req.params;
-        const {connection} = req.body;
-        const service = new UserService(connection);
-        service.submitEmail(data);
-        await service.submitEmail(data);
-        return res.status(200).send();
+      const { data } = req.params;
+      const { connection } = req.body;
+      const service = new UserService(connection);
+      service.submitEmail(data);
+      await service.submitEmail(data);
+      return res.status(200).send();
     } catch (error) {
-        next(error);
+      next(error);
     }
   }
 })();

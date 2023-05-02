@@ -6,7 +6,7 @@ const UserSchema = new Schema<IUser>({
   password: String,
   canEdit: { type: Boolean, default: false },
   canDelete: { type: Boolean, default: false },
-  confirmed: { type: Boolean, default: false }
+  confirmed: { type: Boolean, default: false },
 });
 
 export default UserSchema;

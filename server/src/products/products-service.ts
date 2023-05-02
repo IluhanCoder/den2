@@ -6,6 +6,9 @@ import ProductError from "./product-errors.js";
 import ProductSortOptions, { ProductSortError } from "./sortOptions.js";
 import errorSender from "../helpers/error-sender.js";
 import ProductSchema from "./product-schema.js";
+import table from "text-table";
+import { createWriteStream, writeFileSync } from "fs";
+import docx from "docx";
 
 /**
  * checks if product with given *num* field exists in array
@@ -166,6 +169,201 @@ class ProductService {
         { _id: new Types.ObjectId(productId) },
         editQuery
       );
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async formReport(format: string) {
+    type ReportItem = {
+      data: IProduct;
+      wrongFields: string[];
+    };
+
+    type QueryCondition = {
+      key: string;
+      value: string | object;
+    };
+
+    const wrongFieldsQuery: QueryCondition[] = [
+      { key: "name", value: "" },
+      { key: "desc", value: "" },
+      { key: "category", value: "" },
+      { key: "price", value: { $lt: 0 } },
+      { key: "quantity", value: { $lt: 0 } },
+      { key: "status", value: "" },
+    ];
+
+    const generateTable = (data: ReportItem[]): string[][] => {
+      let textData: string[][] = [
+        [
+          "id",
+          "номер",
+          "найменування",
+          "опис",
+          "категорія",
+          "варстість",
+          "кількість",
+          "статус",
+        ],
+      ];
+      data.map((item: ReportItem) => {
+        let row = [];
+        const product = item.data;
+        Object.keys(product).map((key: string) => {
+          if (item.wrongFields.includes(key)) {
+            row = [...row, `!!!${product[key]}!!!`];
+          } else row = [...row, product[key]];
+        });
+        textData = [...textData, row];
+      });
+      return textData;
+    };
+
+    const generateTxt = (reportItems: ReportItem[]) => {
+      const text = table(generateTable(reportItems), {
+        align: ["c", "c", "c", "c", "c", "c", "c", "c"],
+      });
+      const writeStream = createWriteStream("report.txt");
+      writeStream.write("Записи в базі, в яких було виявлено помилки:\n\n");
+      writeStream.write(text);
+      writeStream.end();
+    };
+
+    // const generateDocx = (reportItems: ReportItem[]) => {
+    //   const {
+    //     Document,
+    //     Packer,
+    //     Paragraph,
+    //     TextRun,
+    //     Table,
+    //     TableRow,
+    //     TableCell,
+    //     WidthType,
+    //     ShadingType
+    //   } = docx;
+
+    //   let tableData = []; 
+    //   reportItems.map((item: ReportItem) => {
+    //     let cells = [];
+    //     const data = item.data;
+    //     Object.keys(data).map((key: string) => {
+    //       const cellTemplate = {
+    //         children: [new Paragraph(data[key])],
+    //         shading: undefined
+    //       }
+
+    //       if(item.wrongFields.includes(key)) {
+    //         cellTemplate.shading = {
+    //           fill: "b79c2f",
+    //           type: ShadingType.REVERSE_DIAGONAL_STRIPE,
+    //           color: "auto",
+    //         }
+    //       }
+    //       const cell = new TableCell({
+    //         cellTemplate
+    //       });
+    //       cells = [...cells, cell]
+    //     })
+    //     const row = new TableRow({
+    //       children: cells
+    //     });
+    //     tableData = [...tableData, row];
+    //   })
+
+    //   const table = new Table({
+    //     rows: [
+    //       new TableRow({
+    //         children: [
+    //           new TableCell({
+    //             children: [new Paragraph("id")],
+    //           }),
+    //           new TableCell({
+    //             children: [new Paragraph("номер")],
+    //           }),
+    //           new TableCell({
+    //             children: [new Paragraph("найменування")],
+    //           }),
+    //           new TableCell({
+    //             children: [new Paragraph("опис")],
+    //           }),
+    //           new TableCell({
+    //             children: [new Paragraph("категорія")],
+    //           }),
+    //           new TableCell({
+    //             children: [new Paragraph("вартість")],
+    //           }),
+    //           new TableCell({
+    //             children: [new Paragraph("кількість")],
+    //           }),
+    //           new TableCell({
+    //             children: [new Paragraph("статус")],
+    //           }),
+    //         ],
+    //         ...tableData
+    //       }),
+    //     ],
+    //   });
+
+    //   const doc = new Document({
+    //     sections: [
+    //       {
+    //         children: [
+    //           new Paragraph({ text: "Table with skewed widths" }),
+    //           table,
+    //         ],
+    //       },
+    //     ],
+    //   });
+
+    //   Packer.toBuffer(doc).then((buffer) => {
+    //     writeFileSync("My Document.docx", buffer);
+    //   });
+    // };
+
+    const formReportItemsArray = (products: IProduct[]) => {
+      let reportItems: ReportItem[] = [];
+      products.map((product: IProduct) => {
+        let wrongFields: string[] = [];
+        wrongFieldsQuery.map((condition: QueryCondition) => {
+          const fieldValue = product[condition.key];
+          if (
+            (typeof fieldValue === "string" &&
+              fieldValue === condition.value) ||
+            fieldValue < 0
+          ) {
+            wrongFields = [...wrongFields, condition.key];
+          }
+        });
+        reportItems = [...reportItems, { data: product, wrongFields }];
+      });
+      return reportItems;
+    };
+
+    try {
+      let query: object[] = [];
+      wrongFieldsQuery.map((condition: QueryCondition) => {
+        const newItem = {};
+        newItem[condition.key] = condition.value;
+        query = [...query, newItem];
+      });
+
+      const wrongProducts: IProduct[] = await this.ProductModel.aggregate([
+        {
+          $match: {
+            $or: query,
+          },
+        },
+      ]);
+
+      const reportItems: ReportItem[] = formReportItemsArray(wrongProducts);
+
+      switch (format) {
+        case "txt":
+          generateTxt(reportItems);
+        // case "docx":
+        //   generateDocx(reportItems);
+      }
     } catch (error) {
       throw error;
     }

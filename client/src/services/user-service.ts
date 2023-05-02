@@ -21,9 +21,9 @@ export default new (class UserService {
 
   async verify(data: string) {
     try {
-        await $api.get(`/verify/${data}`);
+      await $api.get(`/verify/${data}`);
     } catch (error) {
-        throw error;
+      throw error;
     }
   }
 })();

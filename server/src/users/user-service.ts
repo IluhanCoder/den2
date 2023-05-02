@@ -22,7 +22,7 @@ export default class UserService {
           await this.UserModel.create({
             login: md5(login),
             password: md5(password),
-            email
+            email,
           });
           await this.sendEmail(email);
           return;

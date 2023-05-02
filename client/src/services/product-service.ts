@@ -74,4 +74,14 @@ export default new (class ProductService {
       throw error;
     }
   }
+
+  async getReport(reportFormat: string) {
+    try {
+      const fileDownload = require("react-file-download");
+      const response = await $api.get(`/report/${reportFormat}`);
+      return fileDownload(response.data, "report.txt");
+    } catch (error) {
+      throw error;
+    }
+  }
 })();

@@ -6,7 +6,7 @@
     "outDir": "dist",
     "noEmit": true
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "decs.d.ts"],
   "exclude": ["node_modules"],
   "typedocOptions": {
     "entryPoints": ["src/index.ts", "src/products/product-service.ts"],

@@ -19,6 +19,7 @@ const MainPage = () => {
   const [sort, setSort] = useState<number>(0);
   const [offset, setOffset] = useState<number>(0);
   const [filterQuery, setFilterQuery] = useState<IQuery>({});
+  const [reportFormat, setReportFormat] = useState<string>("pdf");
 
   const getProducts = async () => {
     setProducts(
@@ -34,20 +35,24 @@ const MainPage = () => {
     setProducts(await productService.getEmptyCells());
   };
 
-  const pdfHandler = async () => {
-    try {
-      const page = document.getElementById("tab");
-      page!.style.backgroundColor = "white";
-      html2PDF(page, {
-        jsPDF: {
-          format: "a4",
-        },
-        imageType: "image/jpeg",
-        output: "./pdf/generate.pdf",
-      });
-    } catch (error) {
-      throw error;
-    }
+  // const pdfHandler = async () => {
+  //   try {
+  //     const page = document.getElementById("tab");
+  //     page!.style.backgroundColor = "white";
+  //     html2PDF(page, {
+  //       jsPDF: {
+  //         format: "a4",
+  //       },
+  //       imageType: "image/jpeg",
+  //       output: "./pdf/generate.pdf",
+  //     });
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // };
+
+  const reportHandler = async () => {
+    await productService.getReport(reportFormat);
   };
 
   useEffect(() => {
@@ -94,8 +99,16 @@ const MainPage = () => {
       <ProductsTable products={products} />
       <PageToggler currentPage={offset} setPage={setOffset} />
       <div className="flex justify-center">
-        <button onClick={pdfHandler} className={buttonStyle}>
-          сформувати pdf-звіт
+        <select
+          value={reportFormat}
+          onChange={(e) => setReportFormat(e.target.value)}
+        >
+          <option value={"pdf"}>pdf</option>
+          <option value={"txt"}>txt</option>
+          <option value={"docx"}>docx</option>
+        </select>
+        <button onClick={reportHandler} className={buttonStyle}>
+          сформувати звіт
         </button>
       </div>
     </div>

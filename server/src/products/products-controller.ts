@@ -10,6 +10,11 @@ import errorSender from "../helpers/error-sender.js";
 import ProductSortOptions from "./sortOptions.js";
 import productsService from "./products-service.js";
 import mongoose from "mongoose";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 interface IFilterProductsRequest {
   query: object;
@@ -116,6 +121,27 @@ export class ProductsController {
       const service = new ProductService(connection);
       await service.editProduct(id, field, value);
       return res.status(200).send();
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async generateReport(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { connection } = req.body;
+      const { format } = req.params;
+      const service = new ProductService(connection);
+      await service.formReport(format);
+      switch (format) {
+        case "txt":
+          return res.status(200).download("report.txt");
+          break;
+        case "docx":
+          return res.status(200).download("report.docx");
+          break;
+        case "pdf":
+          return res.status(200).download("report.pdf");
+      }
     } catch (error) {
       next(error);
     }

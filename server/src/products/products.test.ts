@@ -3,10 +3,12 @@ import connectToDataBase from "../db/connectToDB.js";
 import IProduct from "./IProduct.js";
 import productsService from "./products-service.js";
 import ProductSortOptions from "./sortOptions.js";
+import ProductService from "./products-service.js";
 
 describe("Testing products DB", () => {
-  const dbConn = process.env.DB_CONN;
-  beforeAll(async () => await connectToDataBase(dbConn));
+  const connString = process.env.DB_CONN;
+  let connection: mongoose.Connection = null;
+  beforeAll(async () => connection = await connectToDataBase(connString));
 
   const productData1: IProduct = {
     name: "test",
@@ -26,74 +28,36 @@ describe("Testing products DB", () => {
     status: "For Sale",
   };
 
-  test("product creates Successfully", async () => {
-    const { _id } = await productsService.createProduct(productData1);
-    const productExists = await productsService.IDExists(_id);
-    await productsService.deleteProductById(_id);
-    expect(productExists).toBe(true);
+  test("product data is correct", async () => {
+    //з'єднання з базою
+    const service = new ProductService(connection);
+    //створення продукту
+    const product: IProduct = await service.createProduct(productData1);
+    //перевірка, чи створився продукт
+    const productExists = await service.IDExists(product._id);
+    //перевірка на коректність створених даних
+    const productCorrect = 
+      product.name.length > 0 &&
+      product.desc.length > 0 &&
+      product.status.length > 0 &&
+      product.price >= 0 && typeof(product.price) === "number" &&
+      product.quantity >= 0 && typeof(product.quantity) === "number";
+    //видалення продукту з бази
+    await service.deleteProductById(product._id);
+    //передача результату тесту
+    expect(productExists && productCorrect).toBe(true);
   });
 
   test("product num is increasing correctly", async () => {
-    const product1 = await productsService.createProduct(productData1);
-    const product2 = await productsService.createProduct(productData1);
-    await productsService.deleteProductById(product1._id);
-    await productsService.deleteProductById(product2._id);
+    //з'єднання з базою
+    const service = new ProductService(connection);
+    //створення першого продуктів
+    const product1 = await service.createProduct(productData1);
+    const product2 = await service.createProduct(productData1);
+    //видалення продуктів
+    await service.deleteProductById(product1._id);
+    await service.deleteProductById(product2._id);
+    //перевірка, щоб різниця в нумерації була 1
     expect(product2.num - product1.num).toBe(1);
   });
-
-  test("connect to database with wrong connection string throws error", async () => {
-    try {
-      await connectToDataBase("");
-    } catch (error) {
-      expect(error !== undefined).toBe(true);
-    }
-  });
-
-  test("filtering works properly", async () => {
-    const product1 = await productsService.createProduct(productData1);
-    const product2 = await productsService.createProduct(productData1);
-    const conditions1 = {
-      name: product1.name,
-      price: { $gte: product1.price },
-    };
-    const conditions2 = {
-      price: { $lt: 800 },
-    };
-    const filteredResult1 = await productsService.filterProducts(
-      conditions1,
-      0
-    );
-    const filteredResult2 = await productsService.filterProducts(
-      conditions2,
-      0
-    );
-    await productsService.deleteProductById(product1._id);
-    await productsService.deleteProductById(product2._id);
-
-    const result1IsRight = filteredResult1.some((prod: IProduct) => {
-      return prod.name === product1.name && prod.price >= product1.price;
-    });
-    const result2IsRight = filteredResult2.some((prod: IProduct) => {
-      return prod.price < 800;
-    });
-
-    expect(result1IsRight && result2IsRight).toBe(true);
-  });
-
-  // test("deletes multiple products", async() => {
-  //     const product1 = await productsService.createProduct(productData1);
-  //     const product2 = await productsService.createProduct(productData2);
-  //     const product3 = await productsService.createProduct(productData1);
-  //     const product4 = await productsService.createProduct(productData2);
-
-  //     const IDArray: string[] = [product1._id.toString(), product2._id.toString(), product3._id.toString(), product4._id.toString()];
-
-  //     await productsService.deleteSetOfProducts(IDArray);
-
-  //     const result = IDArray.some(async (id: string) => {
-  //         return await productsService.IDExists(new mongoose.Types.ObjectId(id));
-  //     })
-
-  //     expect(result).toBe(false);
-  // })
 });

@@ -13,7 +13,7 @@ function App() {
         <Routes>
           <Route path="/main" element={<MainPage />} />
           <Route path="/" element={<LoginPage />} />
-          <Route path="/email/:data" element={<EmailConfirmPage/>}/>
+          <Route path="/email/:data" element={<EmailConfirmPage />} />
         </Routes>
       </BrowserRouter>
     </div>

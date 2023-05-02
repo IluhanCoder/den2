@@ -30,4 +30,6 @@ router.post("/login", userController.login);
 
 router.get("/verify/:data", userController.verify);
 
+router.get("/report/:format", productsController.generateReport);
+
 export default router;

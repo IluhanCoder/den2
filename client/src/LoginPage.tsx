@@ -22,7 +22,7 @@ const LoginPage = () => {
       setConnectionHeader(selectedDb);
       await userService.login(login, password, email);
     } catch (error) {
-        alert("помилка авторізації. Переконайтеся, що ви підтвердили пошту");
+      alert("помилка авторізації. Переконайтеся, що ви підтвердили пошту");
       return;
     }
     navigate("/main");

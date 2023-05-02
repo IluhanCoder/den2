@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import userService from "./services/user-service";
 
 const EmailConfirmPage = () => {
-    const { data } = useParams();
+  const { data } = useParams();
 
   const handleEmail = async () => {
     try {
@@ -24,6 +24,6 @@ const EmailConfirmPage = () => {
       </div>
     </div>
   );
-}
+};
 
 export default EmailConfirmPage;
